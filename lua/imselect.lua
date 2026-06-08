@@ -166,7 +166,7 @@ local function set_engine(engine)
 end
 
 -- Switch to insert mode input engine
-local function insert_mode()
+function M.insert_mode()
 	if not config.enabled or #config.insert_engines == 0 then
 		return
 	end
@@ -178,7 +178,7 @@ local function insert_mode()
 end
 
 -- Switch to normal mode input engine
-local function normal_mode()
+function M.normal_mode()
 	if not config.enabled or #config.normal_engines == 0 then
 		return
 	end
@@ -204,9 +204,9 @@ function M.toggle()
 		-- Set current mode's input engine
 		local mode = vim.api.nvim_get_mode().mode
 		if mode == "i" or mode == "ic" or mode == "ix" then
-			insert_mode()
+			M.insert_mode()
 		else
-			normal_mode()
+			M.normal_mode()
 		end
 
 		-- Setup autocommands
@@ -214,27 +214,27 @@ function M.toggle()
 
 		vim.api.nvim_create_autocmd("InsertEnter", {
 			group = group,
-			callback = insert_mode,
+			callback = M.insert_mode,
 			desc = "Switch to insert mode input engine",
 		})
 
 		vim.api.nvim_create_autocmd("InsertLeavePre", {
 			group = group,
-			callback = normal_mode,
+			callback = M.normal_mode,
 			desc = "Switch to normal mode input engine",
 		})
 
 		vim.api.nvim_create_autocmd("CmdlineEnter", {
 			group = group,
 			pattern = { "/", "\\?" },
-			callback = insert_mode,
+			callback = M.insert_mode,
 			desc = "Switch to insert mode input engine for search",
 		})
 
 		vim.api.nvim_create_autocmd("CmdlineLeave", {
 			group = group,
 			pattern = { "/", "\\?" },
-			callback = normal_mode,
+			callback = M.normal_mode,
 			desc = "Switch to normal mode input engine after search",
 		})
 	end
@@ -247,7 +247,7 @@ function M.insert_select(offset)
 	end
 
 	config.insert_engines_idx = (config.insert_engines_idx + offset) % #config.insert_engines
-	insert_mode()
+	M.insert_mode()
 end
 
 -- Select next normal mode engine
@@ -257,7 +257,7 @@ function M.normal_select(offset)
 	end
 
 	config.normal_engines_idx = (config.normal_engines_idx + offset) % #config.normal_engines
-	normal_mode()
+	M.normal_mode()
 end
 
 -- Cleanup function

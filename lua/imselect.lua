@@ -349,6 +349,10 @@ function M.setup(opts)
 	end
 end
 
+function M.is_enabled()
+	return config.enabled
+end
+
 -- Add cleanup function to module for manual cleanup if needed
 function M.cleanup()
 	cleanup()
